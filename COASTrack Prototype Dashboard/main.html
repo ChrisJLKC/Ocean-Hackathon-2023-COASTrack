@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            margin: 5px;
+            padding: 0;
+        }
+
+        .Title {
+            text-align: center;
+            background-color: #111;
+            color: #FFF;
+            margin: 5px;
+            padding: 5px;
+            border-radius: 5px;
+            font-family: sans-serif;
+            position: relative;
+        }
+
+        .Chart-Container {
+            font-family: 'Arial', sans-serif;
+            justify-content: center;
+            align-items: center;
+            margin: 10px;
+            position: relative;
+        }
+
+        canvas {
+            background-color: #fff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .Popup-Box {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            padding: 0;
+            position: relative;
+            font-family: 'Poppins', sans-serif;
+            z-index: 1;
+        }
+
+        .popup {
+            display: none;
+
+            background-color: #d97f76;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            position: relative;
+        }
+
+        .button {
+            padding: 10px 20px;
+            background-color: #000;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .info-boxes {
+            width: 100%;
+            margin: 25px 0 25px 0;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            display: flex;
+            position: relative;
+            justify-content: center;
+            align-items: center;
+            font-size: 10px;
+        }
+
+        .box {
+            width: 30%;
+            background-color: #ace1f9;
+            padding: 10px;
+            margin: 2px;
+            text-align: center;
+            display: inline-block;
+            border-radius: 8px;
+            position: relative;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .Sea_img {
+            width: 100%;
+            border-radius: 5px;
+        }
+
+        .middle {
+            transition: .5s ease;
+            opacity: 0;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            -ms-transform: translate(-50%, -50%)
+        }
+
+        .box:hover .Sea_img {
+            opacity: 0.3;
+        }
+
+        .box:hover .middle {
+            opacity: 1;
+        }
+
+        .text {
+            background-color: #ace1f9;
+            color: white;
+            font-size: 16px;
+            padding: 16px 32px;
+        }
+
+    </style>
+    <title>CoastTrack Dashboard</title>
+</head>
+<body>
+    <div class="Popup-Box">
+        <div class="overlay" id="overlay"></div>
+        <div class="popup" id="popup">
+            <p><b>Immediate Actions</b></p>
+            <p>Deploy emergency shoreline measures</p>
+            <p>Implement coastal resident safety plan</p>
+            <button class="button" onclick="closePopup()">Close</button>
+        </div>
+    </div>
+
+    <div class="Title">
+        <h1>CoastTrack Dashboard</h1>
+    </div>
+
+    <div class="Info-boxes">
+        <div class="box">
+            <h1><b>Recovery Likelihood</b></h1>
+            <h1><b>98%</b></h1>
+            <p><b>Parameters</b></p>
+            <p>Average seasonal conditions: <i>Winter</i></p>
+            <p><i>Baseline: 01-Nov-2023</i></p>
+            <p>Future conditions: current five day forecast</p>
+        </div>
+        <div class="box">
+            <img src="./Images/PATH_TO_SEA_IMG" class="Sea_img" alt="Sea">
+            <div class="middle">
+                <div class="text">Photographic Database</div>
+            </div>
+        </div>
+        <div class="box">
+            <h1>Last data collected: 18 minutes ago</h1>
+        </div>
+    </div>
+
+    <div class="Chart-Container">
+        <canvas id="myChart" width="400" height="75"></canvas>
+    </div>
+
+    <script>
+        const ctx = document.getElementById('myChart').getContext('2d');
+        const myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+                datasets: [{
+                    label: 'Sediment Removal Risk',
+                    data: [50, 80, 120, 50, 70, 10, 60],
+                    backgroundColor: '#f9c316',
+                },
+                {
+                    label: 'Wave Energy',
+                    data: [40, 60, 125, 5, 69, 54, 100],
+                    backgroundColor: '#ace1f9',
+                },
+                {
+                    label: 'Storm Surge',
+                    data: [20, 45, 150, 57, 90, 54, 90],
+                    backgroundColor: '#fedbb6'
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // Function to show the popup and overlay
+        function showPopup() {
+            document.getElementById('overlay').style.display = 'flex';
+            document.getElementById('popup').style.display = 'block';
+        }
+
+        // Function to close the popup and overlay
+        function closePopup() {
+            document.getElementById('overlay').style.display = 'none';
+            document.getElementById('popup').style.display = 'none';
+        }
+
+        // Show the popup when the page loads
+        window.onload = showPopup;
+    </script>
+</body>
+</html>
